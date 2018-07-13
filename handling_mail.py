@@ -1,37 +1,35 @@
 def to_print(data):
-    for i in range(len(data)):
-        print(data[i])
-    print()
+    for key in data.keys():
+        print(key)
+        for value in data.values():
+            print(value)
+        print()
 
-d = []
-with open('mbox.txt') as f:
-    line = f.readline()
+emails = {}
+
+with open('mbox.txt') as input_file:
+    line = input_file.readline()
+    item = {}
     while line:
         if line.startswith('From '):
-            item = []
+            item = {}
             string = line.split(' ')
-            d.append(string[1])
-            item.append(string[3:])
+            if emails.get(string[1]) == None:
+                emails[string[1]] = []
+            item['date'] = string[3:]
         if line.startswith('Subject:'):
-            k = 0
             subj_array = []
             while line != '\n':
                 subj_array.append(line)
-                line = f.readline()
-            item.append(subj_array)
-            d.append(item)
-        line = f.readline()
+                line = input_file.readline()
+            item['subj'] = subj_array
+            emails[string[1]].append(item)
+        line = input_file.readline()
 
-j = 0
-quantity = {}
-while j < len(d):
-    k = d.count(d[j])
-    quantity[d[j]] = k
-    j += 2
+#output from (date): subject
+to_print(emails)
 
-to_print(d)
-
-for i in quantity:
-    res = 'From %s quantity is %d' % (i, quantity[i])
+# output "from: quantity"
+for key, value in emails.items():
+    res = '%s: %d' % (key, len(value))
     print(res)
-
